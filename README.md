@@ -297,3 +297,87 @@ export default function PostCard({ post }) {
 
 ## Loading Page
 
+El Loading no se resuelve como en React con un useState (isLoading), sino que se agrega un archivo `loading.jsx` en la carpeta del componente.
+
+Ejemplo:
+
+```
+─ 📁 app
+   │
+   └── 📁 posts
+        │── 📄 loading.jsx
+        └── 📄 page.jsx
+```
+
+### Ejemplo loading.jsx
+
+```js
+export default function Loading() {
+  return (
+    <div>
+        <h1>Cargando...</h1>
+    </div>
+  )
+}
+```
+
+### *IMPORTANTE!*
+De no detectarse un Loading en los componentes hijos, se utilizará el Loading más cercano.
+
+## Params (URL)
+
+Para crear una ruta que reciba parámetros por URL, hay que indicarlo creando una subcarpeta con el nombre `[variable param]`.
+
+### Ejemplo
+
+```
+─ 📁 app
+   │
+   └── 📁 posts
+        │── 📄 loading.jsx
+        │── 📄 page.jsx
+        │
+        └── 📁 [postID]
+             └── 📄 page.jsx
+```
+
+En este caso, `postID` es el nombre del param a recibir por URL. 
+
+Por ejemplo, la ruta quedaría: 
+
+- `http://localhost:3000/posts/1`
+
+### Archivo page.jsx de [postID]
+
+```js
+export default function page({ params }) {
+	return (
+		<div>
+			<h1>URL Param: {params.postID}</h1>
+		</div>
+	)
+}
+```
+
+En el mismo archivo podría crear una función para procesar el fetch del post:
+
+```js
+async function loadPost(postID) {
+	const response = await fetch(`https://jsonplaceholder.typicode.com/posts/${postID}`)
+	const data = await response.json()
+	return data
+}
+
+export default async function page({ params }) {
+	const postData = await loadPost(params.postID)
+
+	return (
+		<div>
+			<h1>{postData.id}. {postData.title}</h1>
+			<p>{postData.body}</p>
+		</div>
+	)
+}
+```
+
+## Suspense
