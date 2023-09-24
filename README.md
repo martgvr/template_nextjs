@@ -2,14 +2,19 @@
 
 ## Índice
 
-1. [**Instalación y ejecución**](#instalación--ejecución)
-2. [**Estructura**](#estructura)
-3. [**Link**](#link)
-4. [**Carpeta components**](#carpeta-components)
-5. [**SEO**](#seo)
-6. [**Fuentes**](#fuentes)
-7. [**Error 404**](#error-404)
-8. [**Componentes lado servidor**](#componentes-lado-servidor)
+1. [Instalación y ejecución](#instalación--ejecución)
+2. [Estructura](#estructura)
+3. [Link](#link)
+4. [Carpeta components](#carpeta-components)
+5. [SEO](#seo)
+6. [Fuentes](#fuentes)
+7. [Error 404](#error-404)
+8. [Componentes lado servidor](#componentes-lado-servidor)
+9. [Componente Servidor Asíncrono & Cliente](#componente-servidor-asíncrono--cliente)
+10. [Loading Page](#loading-page)
+11. [Params (URL)](#params-url)
+12. [Suspense](#suspense)
+13. [Import Alias](#import-alias)
 
 ## Instalación & Ejecución
 
@@ -381,3 +386,70 @@ export default async function page({ params }) {
 ```
 
 ## Suspense
+
+El siguiente código, vuelve a llamar a PostPage para mostrar un listado de `Otras publicaciones`. Pero el Post individual solicitado (Ej: /posts/1) no se mostrará hasta que se termine de cargar la petición del componente `<PostPage />`.
+
+```js
+import PostPage from "../page"
+
+async function loadPost(postID) {
+	const response = await fetch(`https://jsonplaceholder.typicode.com/posts/${postID}`)
+	const data = await response.json()
+	return data
+}
+
+export default async function page({ params }) {
+	const postData = await loadPost(params.postID)
+
+	return (
+		<div>
+			<h1>{postData.id}. {postData.title}</h1>
+			<p>{postData.body}</p>
+
+			<hr />
+			<h3>Otras publicaciones</h3>
+			<PostPage />
+		</div>
+	)
+}
+```
+
+Para solucionar esto, vamos a utilizar el componente `Suspense` de React.
+
+```js
+<Suspense fallback={<h4>Cargando publicaciones...</h4>}>
+	<PostPage />
+</Suspense>
+```
+
+El fallback es el elemento a mostrar mientras se realiza la carga.
+
+## Import Alias
+
+Se utiliza para tener un sistema de importación más rápido y directo, y no tener que recorrer directorios.
+
+### Archivo jsconfig.json
+
+```json
+{
+  "compilerOptions": {
+    "paths": {
+      "@/*": ["./*"]
+    }
+  }
+}
+```
+
+La linea `"@/*": ["./*"]` quiere decir que todo lo que comience con `@/` va a hacer referencia al root `./`
+
+Haciendo uso de esta herramienta podemos simplificar los imports como el ejemplo siguiente:
+
+```js
+import PostCard from '../../components/PostCard/PostCard'
+```
+
+```js
+import PostCard from "@/components/PostCard/PostCard"
+```
+
+
