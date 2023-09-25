@@ -1,10 +1,11 @@
 'use client'
 
+import './PostCard.css'
 import Link from "next/link"
 
 export default function PostCard({ post }) {
   return (
-    <div>
+    <div className='postCard'>
         <Link href={`/posts/${post.id}`}>
             <h3>{post.id}. {post.title}</h3>
         </Link>

@@ -1,3 +1,4 @@
+import './globals.css'
 import Navbar from "@/components/Navbar/Navbar"
 import { Open_Sans as Font } from 'next/font/google'
 

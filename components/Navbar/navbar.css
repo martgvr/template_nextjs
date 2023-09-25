@@ -1,15 +1,14 @@
 .navbar {
     height: 70px;
     padding: 0 30px;
-    border-radius: 6px;
     margin-bottom: 10px;
     
     display: flex;
     align-items: center;
     justify-content: space-between;
 
-    color: black;
-    background-color: rgb(210, 210, 210);
+    color: white;
+    background-color: rgb(30, 30, 30);
 }
 
 .navbar-items {
